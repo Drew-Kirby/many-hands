@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { formatDue, isOverdue } from '../lib/dates.js';
 import { PHONE_PATTERN, PHONE_PLACEHOLDER, formatPhone } from '../lib/phone.js';
 
@@ -127,6 +127,42 @@ export function ErrorNote({ children }) {
 
 export function Loading() {
   return <div className="loading" role="status">Loading…</div>;
+}
+
+// Password field with a Show/Hide button, so people can check what they typed before submitting.
+export function PasswordInput({ label = 'Password', hint, autoComplete, ...inputProps }) {
+  const id = useId();
+  const hintId = useId();
+  const [shown, setShown] = useState(false);
+  return (
+    <div className="lbl">
+      <label htmlFor={id}>{label}</label>
+      <div className="pw-wrap">
+        <input
+          id={id}
+          className="field"
+          type={shown ? 'text' : 'password'}
+          autoComplete={autoComplete}
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          aria-describedby={hint ? hintId : undefined}
+          {...inputProps}
+        />
+        <button
+          type="button"
+          className="pw-toggle"
+          aria-controls={id}
+          aria-pressed={shown}
+          aria-label={shown ? 'Hide password' : 'Show password'}
+          onClick={() => setShown(!shown)}
+        >
+          {shown ? 'Hide' : 'Show'}
+        </button>
+      </div>
+      {hint && <span id={hintId} className="hint">{hint}</span>}
+    </div>
+  );
 }
 
 // Phone field that formats as you type and stops at 10 digits.
