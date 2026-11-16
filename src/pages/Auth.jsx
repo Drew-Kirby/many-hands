@@ -3,7 +3,7 @@ import { COMMUNITY_NAME } from '../firebase.config.js';
 import { useAuth } from '../lib/auth.jsx';
 import { useAction } from '../lib/errors.js';
 import { saveNewMember } from '../lib/api.js';
-import { ErrorNote, FormHead, Logo, PhoneInput } from '../components/ui.jsx';
+import { ErrorNote, FormHead, Logo, PasswordInput, PhoneInput } from '../components/ui.jsx';
 
 export default function AuthPage() {
   const { logIn, signUp, resetPassword } = useAuth();
@@ -76,10 +76,11 @@ export default function AuthPage() {
           {!isLogin && (
             <PhoneInput value={form.phone} onChange={(phone) => setForm({ ...form, phone })} />
           )}
-          <label className="lbl">Password
-            <input className="field" type="password" autoComplete={isLogin ? 'current-password' : 'new-password'} {...field('password')} />
-            {!isLogin && <span className="hint">At least 8 characters.</span>}
-          </label>
+          <PasswordInput
+            autoComplete={isLogin ? 'current-password' : 'new-password'}
+            hint={isLogin ? null : 'At least 8 characters.'}
+            {...field('password')}
+          />
           <ErrorNote>{error}</ErrorNote>
           {error.startsWith('That email already') && (
             <button type="button" className="textlink center" onClick={() => switchTab('login')}>Log in instead</button>
