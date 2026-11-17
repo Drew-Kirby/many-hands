@@ -4,7 +4,7 @@ import { useAuth } from '../lib/auth.jsx';
 import { useData } from '../lib/data.jsx';
 import { useAction } from '../lib/errors.js';
 import { groupTasks, healthSentence, issueHealth } from '../lib/health.js';
-import { adminDeleteIssue, deleteIssue } from '../lib/api.js';
+import { adminDeleteIssue } from '../lib/api.js';
 import { TopBar } from '../components/Layout.jsx';
 import { HeldTaskCard, OpenTaskCard } from '../components/cards.jsx';
 import IssueComments from '../components/IssueComments.jsx';
@@ -75,9 +75,8 @@ export default function IssueDetail() {
 
   const askDelete = () => setConfirming(true);
   const doDelete = () => run(async () => {
-    // Admins delete the issue's tasks along with it. Owners have to clear the tasks first.
-    if (isAdmin) await adminDeleteIssue(issue.id, tasks.map((t) => t.id));
-    else await deleteIssue(issue.id);
+    // Owners and admins can delete every task on the issue, so they take them along with it.
+    await adminDeleteIssue(issue.id, tasks.map((t) => t.id));
     navigate('/issues');
   });
 
@@ -112,14 +111,7 @@ export default function IssueDetail() {
             {canDelete && <button type="button" className="textlink danger" onClick={askDelete}>Delete</button>}
           </div>
         )}
-        {isOwner && !isAdmin && confirming && tasks.length > 0 && (
-          <div role="alert" className="blocked">
-            <strong>This issue still has {tasks.length} {tasks.length === 1 ? 'task' : 'tasks'}.</strong>
-            <span>Delete its tasks first. Only a task's assignee can delete it, so take any unclaimed ones or ask the people holding them.</span>
-            <button type="button" className="pill pill-plain pill-sm" onClick={() => setConfirming(false)}>OK</button>
-          </div>
-        )}
-        {(isAdmin || tasks.length === 0) && confirming && (
+        {confirming && (
           <ConfirmRow
             question={tasks.length ? `Delete this issue and its ${tasks.length} ${tasks.length === 1 ? 'task' : 'tasks'} for everyone?` : 'Delete this issue for everyone?'}
             busy={busy}

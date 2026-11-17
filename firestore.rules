@@ -156,6 +156,17 @@ service cloud.firestore {
         && incoming().diff(existing()).affectedKeys().hasOnly(['assigneeId']);
     }
 
+    // The owner of the issue a task belongs to.
+    function ownsTaskIssue() {
+      let issuePath = /databases/$(database)/documents/issues/$(existing().issueId);
+      return exists(issuePath) && get(issuePath).data.ownerId == uid();
+    }
+    // Issue owner: can reassign (or free) any task on their issue, changing only the assignee and status.
+    function isOwnerReassign() {
+      return ownsTaskIssue() && validTask()
+        && incoming().diff(existing()).affectedKeys().hasOnly(['assigneeId', 'status']);
+    }
+
     match /tasks/{taskId} {
       allow read: if active();
       allow create: if active() && validTask() && createdNow()
@@ -164,11 +175,12 @@ service cloud.firestore {
       allow update: if active() && (
         isClaim()
         || isAdminRelease()
+        || isOwnerReassign()
         || (existing().assigneeId == uid() && validTask()
             && unchanged('issueId') && unchanged('createdBy') && unchanged('createdAt'))
       );
       // Admins can delete tasks so they can delete an issue together with its tasks.
-      allow delete: if active() && (existing().assigneeId == uid() || isAdmin());
+      allow delete: if active() && (existing().assigneeId == uid() || ownsTaskIssue() || isAdmin());
     }
 
     // ---- comments/{id} ----

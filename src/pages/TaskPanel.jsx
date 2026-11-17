@@ -105,7 +105,7 @@ function Comments({ taskId }) {
 export default function TaskPanel() {
   const { issueId, taskId } = useParams();
   const { user } = useAuth();
-  const { tasks, issues, nameOf } = useData();
+  const { tasks, issues, members, nameOf } = useData();
   const navigate = useNavigate();
   const [confirming, setConfirming] = useState(false);
   const { busy, error, run } = useAction();
@@ -126,10 +126,15 @@ export default function TaskPanel() {
   }
 
   const mine = task.assigneeId === user.uid;
+  const issueOwner = issue?.ownerId === user.uid;
   const assigneeName = task.assigneeId ? nameOf(task.assigneeId) : null;
 
   const setStatus = (status) => run(() => updateTask(task.id, { status }));
   const giveBack = () => run(() => updateTask(task.id, { assigneeId: null, status: 'todo' }));
+  const reassign = (e) => {
+    const assigneeId = e.target.value || null;
+    run(() => updateTask(task.id, assigneeId ? { assigneeId } : { assigneeId, status: 'todo' }));
+  };
   const remove = () => run(async () => {
     await deleteTask(task.id);
     close();
@@ -178,10 +183,29 @@ export default function TaskPanel() {
               <ErrorNote>{error}</ErrorNote>
             </div>
           )}
-          {!mine && task.assigneeId && (
+          {issueOwner && !mine && (
+            <div className="owner-box">
+              <label className="lbl">
+                Assigned to
+                <select className="field select" value={task.assigneeId ?? ''} onChange={reassign} disabled={busy}>
+                  <option value="">Unassigned</option>
+                  {members.map((m) => <option key={m.id} value={m.id}>{m.id === user.uid ? `${m.name} (you)` : m.name}</option>)}
+                </select>
+              </label>
+              {!confirming ? (
+                <div className="row-gap">
+                  <button type="button" className="textlink danger" onClick={() => setConfirming(true)}>Delete</button>
+                </div>
+              ) : (
+                <ConfirmRow question="Delete this task for everyone?" busy={busy} onConfirm={remove} onCancel={() => setConfirming(false)} />
+              )}
+              <ErrorNote>{error}</ErrorNote>
+            </div>
+          )}
+          {!issueOwner && !mine && task.assigneeId && (
             <div className="lock-box"><LockNote>Only {firstName(assigneeName)} can edit, update or delete this task.</LockNote></div>
           )}
-          {!task.assigneeId && (
+          {!issueOwner && !task.assigneeId && (
             <div className="lock-box"><LockNote>Whoever takes this task can edit or delete it.</LockNote></div>
           )}
         </section>

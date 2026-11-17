@@ -21,13 +21,12 @@ import {
 export default function TaskForm() {
   const { issueId: routeIssueId, taskId } = useParams();
   const { user } = useAuth();
-  const { tasks, issues, members, nameOf } = useData();
+  const { tasks, members, nameOf } = useData();
   const navigate = useNavigate();
 
   const task = tasks.find((t) => t.id === taskId);
   const isEdit = Boolean(taskId);
 
-  const [issueId, setIssueId] = useState(routeIssueId);
   const [title, setTitle] = useState(task?.title || '');
   const [description, setDescription] = useState(task?.description || '');
   const [status, setStatus] = useState(task?.status || 'todo');
@@ -42,7 +41,6 @@ export default function TaskForm() {
 
   // Remember the original form values so we can detect unsaved changes.
   const current = {
-    issueId,
     title,
     description,
     status,
@@ -131,10 +129,10 @@ export default function TaskForm() {
       } else {
         const id = await createTask(user.uid, {
           ...values,
-          issueId,
+          issueId: routeIssueId,
         });
 
-        navigate(`/issues/${issueId}/tasks/${id}`);
+        navigate(`/issues/${routeIssueId}/tasks/${id}`);
       }
     });
   };
@@ -171,24 +169,6 @@ export default function TaskForm() {
         aria-label={isEdit ? 'Edit task' : 'New task'}
         onSubmit={submit}
       >
-        {!isEdit && (
-          <label className="lbl">
-            Issue
-
-            <select
-              className="field select"
-              value={issueId}
-              onChange={(e) => setIssueId(e.target.value)}
-            >
-              {issues.map((i) => (
-                <option key={i.id} value={i.id}>
-                  {i.title}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
         <label className="lbl">
           Title
 
