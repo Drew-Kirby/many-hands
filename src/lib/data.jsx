@@ -35,6 +35,8 @@ export function DataProvider({ children }) {
       memberById,
       tasksFor: (issueId) => (tasks || []).filter((t) => t.issueId === issueId),
       nameOf: (id) => memberById.get(id)?.name || 'A former member',
+      // Member Workload Indicator: tasks a member holds across all issues, not counting finished ones.
+      activeTaskCount: (id) => (tasks || []).filter((t) => t.assigneeId === id && t.status !== 'done').length,
     };
   }, [members, issues, tasks]);
 

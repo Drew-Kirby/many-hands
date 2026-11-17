@@ -7,6 +7,9 @@ export const ISSUE_STATUS = { open: 'Open', in_progress: 'In progress', resolved
 
 export const firstName = (name = '') => name.trim().split(/\s+/)[0];
 
+// Member Workload Indicator: "(1 active task)" or "(3 active tasks)".
+export const workloadLabel = (count) => `(${count} active ${count === 1 ? 'task' : 'tasks'})`;
+
 export function formatWhen(timestamp) {
   const date = timestamp?.toDate?.();
   if (!date) return 'Just now';

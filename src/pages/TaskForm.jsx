@@ -16,12 +16,13 @@ import {
   Segmented,
   TASK_STATUS,
   firstName,
+  workloadLabel,
 } from '../components/ui.jsx';
 
 export default function TaskForm() {
   const { issueId: routeIssueId, taskId } = useParams();
   const { user } = useAuth();
-  const { tasks, members, nameOf } = useData();
+  const { tasks, members, nameOf, activeTaskCount } = useData();
   const navigate = useNavigate();
 
   const task = tasks.find((t) => t.id === taskId);
@@ -281,7 +282,8 @@ export default function TaskForm() {
                 />
 
                 <span className="assign-name">
-                  {p.name}
+                  {/* Member Workload Indicator */}
+                  {p.name} {workloadLabel(activeTaskCount(p.id))}
 
                   {p.id === user.uid && (
                     <small>You</small>
