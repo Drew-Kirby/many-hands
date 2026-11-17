@@ -5,7 +5,7 @@ import { useComments, useData } from '../lib/data.jsx';
 import { useAction } from '../lib/errors.js';
 import { addComment, deleteComment, deleteTask, updateComment, updateTask } from '../lib/api.js';
 import { TakeButton } from '../components/cards.jsx';
-import { Avatar, ConfirmRow, DueBadge, ErrorNote, Icons, LockNote, Modal, Segmented, StatusBadge, TASK_STATUS, firstName, formatWhen } from '../components/ui.jsx';
+import { Avatar, ConfirmRow, DueBadge, ErrorNote, Icons, LockNote, Modal, Segmented, StatusBadge, TASK_STATUS, firstName, formatWhen, workloadLabel } from '../components/ui.jsx';
 
 function Comment({ comment }) {
   const { user } = useAuth();
@@ -105,7 +105,7 @@ function Comments({ taskId }) {
 export default function TaskPanel() {
   const { issueId, taskId } = useParams();
   const { user } = useAuth();
-  const { tasks, issues, members, nameOf } = useData();
+  const { tasks, issues, members, nameOf, activeTaskCount } = useData();
   const navigate = useNavigate();
   const [confirming, setConfirming] = useState(false);
   const { busy, error, run } = useAction();
@@ -189,7 +189,8 @@ export default function TaskPanel() {
                 Assigned to
                 <select className="field select" value={task.assigneeId ?? ''} onChange={reassign} disabled={busy}>
                   <option value="">Unassigned</option>
-                  {members.map((m) => <option key={m.id} value={m.id}>{m.id === user.uid ? `${m.name} (you)` : m.name}</option>)}
+                  {/* Member Workload Indicator */}
+                  {members.map((m) => <option key={m.id} value={m.id}>{m.id === user.uid ? `${m.name} (you)` : m.name} {workloadLabel(activeTaskCount(m.id))}</option>)}
                 </select>
               </label>
               {!confirming ? (
