@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "717795595051",
+    "project_id": "many-hands-drewkirby",
+    "storage_bucket": "many-hands-drewkirby.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717795595051:android:679cfaed766796b748eb6e",
+        "android_client_info": {
+          "package_name": "edu.svsu.drewkirby.many_hands"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCB8C_kxOrFVQUioRepgOspAbCq2lR179A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

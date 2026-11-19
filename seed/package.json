@@ -1,0 +1,7 @@
+{
+  "name": "many-hands-seed",
+  "private": true,
+  "type": "module",
+  "scripts": { "seed": "node seed.js", "reset": "node seed.js --reset" },
+  "dependencies": { "firebase-admin": "^13.0.0" }
+}
