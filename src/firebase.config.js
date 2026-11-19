@@ -6,12 +6,12 @@
 //  Never put a service-account key or any other secret in this repo.
 // ===========================================================================
 export const firebaseConfig = {
-  apiKey: 'AIzaSyARja5c57mFqr1piOVRLJ2A5CmvnMhtnY8',
-  authDomain: 'tasks-f16b8.firebaseapp.com',
-  projectId: 'tasks-f16b8',
-  storageBucket: 'tasks-f16b8.firebasestorage.app',
-  messagingSenderId: '1052926255830',
-  appId: '1:1052926255830:web:2b5fada8578cc5a2bf1f77',
+  apiKey: 'AIzaSyA9Bcjs0vBpWiWe7oDtypfIrOfsAc1uujI',
+  authDomain: 'many-hands-drewkirby.firebaseapp.com',
+  projectId: 'many-hands-drewkirby',
+  storageBucket: 'many-hands-drewkirby.firebasestorage.app',
+  messagingSenderId: '717795595051',
+  appId: '1:717795595051:web:5ed4bb1ae91d017548eb6e',
 };
 
 // Shown as a small label at the top of screens in the design. Change it to your group's name.
